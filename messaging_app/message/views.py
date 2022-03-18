@@ -1,3 +1,20 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-# Create your views here.
+from message.models import Message
+from message.serializers import MessageSerializer
+from django.http import JsonResponse
+
+class ReceiveMessages(APIView):
+    def get(self, request):
+        messages = Message.objects.filter(recipient = request.query_params['recipient'])
+        serializer = MessageSerializer(messages, many = True)
+        return Response(serializer.data)
+
+class SendMessage(APIView):
+    def post(self, request):
+        serializer = MessageSerializer(data=request.query_params)
+        serializer.is_valid()
+        serializer.save()
+        print(serializer)
+        return Response(request.query_params)
