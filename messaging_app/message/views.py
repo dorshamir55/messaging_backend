@@ -6,8 +6,8 @@ from message.serializers import MessageSerializer
 from django.http import JsonResponse
 
 class ReceiveMessages(APIView):
-    def get(self, request):
-        messages = Message.objects.filter(recipient = request.query_params['recipient'])
+    def get(self, request, recipient):
+        messages = Message.objects.filter(recipient = recipient)
         serializer = MessageSerializer(messages, many = True)
         return Response(serializer.data)
 
